@@ -1,3 +1,6 @@
+var NW = require('nw.gui');
+const gateNum = { "JK": 0 , "RS": 1, "T": 2, "D": 3, "not": 4, "and": 5, "or": 6};
+
 jsPlumb.ready(function () {
 
     var instance = window.jsp = jsPlumb.getInstance({
@@ -120,6 +123,24 @@ jsPlumb.ready(function () {
     addGate = function(type){
       console.log("addGate ", type);
       showNotification("img/result.png", "Add Gate", type);
+      var newGate = document.createElement("div");
+      var gateId = type + gateNum[ type ];
+      newGate.className = "window jtk-node";
+      newGate.id = gateId;
+      $('.jtk-demo-canvas').append( newGate );
+
+      $(document).bind( "mousemove" , function(e) {
+        showNotification("img/result.png", "mousemove", gateId);
+        $('#' + gateId).css({
+          left: e.pageX - 100,
+          top: e.pageY - 200
+        });
+        $(document).bind( "click" , function(e){
+          $(document).unbind( "mousemove" );
+        });
+
+      });
+
     }
 
     // suspend drawing and initialise.
@@ -177,6 +198,7 @@ jsPlumb.ready(function () {
 });
 
 var addGate;
+var gates = [];
 
 
 
@@ -203,4 +225,10 @@ var showNotification = function (icon, title, body) {
   };
 
   return notification;
-}
+};
+
+var writeLog = function (msg) {
+  var logElement = $("#output");
+  logElement.innerHTML += msg + "<br>";
+  logElement.scrollTop = logElement.scrollHeight;
+};
