@@ -1,5 +1,6 @@
-var NW = require('nw.gui');
-const gateNum = { "JK": 0 , "RS": 1, "T": 2, "D": 3, "not": 4, "and": 5, "or": 6};
+/*var NW = require('nw.gui');*/
+const gateNum = { "JK": 0 , "RS": 1, "T": 2, "D": 3, "or": 4, "and": 5, "not": 6, "in": 7, "out": 8};
+var used = [0,0,0,0,0,0,0,0,0];
 
 jsPlumb.ready(function () {
 
@@ -30,7 +31,7 @@ jsPlumb.ready(function () {
     });
 
     var basicType = {
-        connector: "StateMachine",
+        connector: "FlowChart",
         paintStyle: { strokeStyle: "red", lineWidth: 4 },
         hoverPaintStyle: { strokeStyle: "blue" },
         overlays: [
@@ -73,6 +74,7 @@ jsPlumb.ready(function () {
             connector: [ "Flowchart", { stub: [40, 60], gap: 10, cornerRadius: 5, alwaysRespectStubs: true } ],
             connectorStyle: connectorPaintStyle,
             hoverPaintStyle: endpointHoverStyle,
+            maxConnections: 10,
             connectorHoverStyle: connectorHoverStyle,
             dragOptions: {},
             overlays: [
@@ -84,6 +86,19 @@ jsPlumb.ready(function () {
                 } ]
             ]
         },
+
+        /*clockEndpoint = {
+            endpoint: "Triangle",
+            paintStyle: { fillStyle: "#7AB02C", radius: 11, rotation: 90 },
+            hoverPaintStyle: endpointHoverStyle,
+            maxConnections: -1,
+            dropOptions: { hoverClass: "hover", activeClass: "active" },
+            isTarget: true,
+            overlays: [
+                [ "Label", { location: [0.5, -0.5], label: "Drop", cssClass: "endpointTargetLabel", visible:false } ]
+            ]
+        },*/
+
     // the definition of target endpoints (will appear when the user drags a connection)
 
 /*defines the point of target node*/
@@ -91,7 +106,7 @@ jsPlumb.ready(function () {
             endpoint: "Dot",
             paintStyle: { fillStyle: "#7AB02C", radius: 11 },
             hoverPaintStyle: endpointHoverStyle,
-            maxConnections: -1,
+            maxConnections: 1,
             dropOptions: { hoverClass: "hover", activeClass: "active" },
             isTarget: true,
             overlays: [
@@ -102,7 +117,7 @@ jsPlumb.ready(function () {
             connection.getOverlay("label").setLabel(connection.sourceId.substring(15) + "-" + connection.targetId.substring(15));
         };
 
-    var _addEndpoints = function (toId, sourceAnchors, targetAnchors) {
+    var _addEndpoints = function (toId, sourceAnchors, targetAnchors/*, clockAnchors*/) {
         for (var i = 0; i < sourceAnchors.length; i++) {
             var sourceUUID = toId + sourceAnchors[i];
             instance.addEndpoint("flowchart" + toId, sourceEndpoint, {
@@ -115,23 +130,66 @@ jsPlumb.ready(function () {
               anchor: targetAnchors[j], uuid: targetUUID
             });
         }
+
     };
 
     /*
       add gate from button
     */
     addGate = function(type){
-      console.log("addGate ", type);
-      showNotification("img/result.png", "Add Gate", type);
+      console.log("Add Gate", type);
       var newGate = document.createElement("div");
-      var gateId = type + gateNum[ type ];
-      newGate.className = "window jtk-node";
-      newGate.id = gateId;
-      $('.jtk-demo-canvas').append( newGate );
+      var gateId = type + '-' + used[ gateNum[ type ] ];
+      used[ gateNum[type] ]++;
+      newGate.id = 'flowchart' + gateId;
+      allGates.push(gateId);
 
-      $(document).bind( "mousemove" , function(e) {
-        showNotification("img/result.png", "mousemove", gateId);
-        $('#' + gateId).css({
+
+      if(gateNum[type] < 2) { // JK, RS
+          newGate.className = "window jtk-node";
+          $('.jtk-demo-canvas').append( newGate );
+
+          $('#flowchart' + gateId).append('<h4 align="left">' + type[0] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 'Q' + '</h4>');
+          $('#flowchart' + gateId).append('<h4 align="left">' + type[1] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 'Q\'' + '</h4>');
+
+          _addEndpoints(gateId,
+            [
+              "TopRight", "BottomRight"/*[ 1, 0.2, 1, 0, 0, 0, "right" ], [ 1, 0.8, 1, 0, 0, 0, "right" ]*/
+            ], [
+              "TopLeft", "BottomLeft"/*[ 0, 0.2, 0, 0, 0, 0, "left" ], [ 0, 0.8, 0, 0, 0, 0, "left" ]*/
+            ]/*, ["BottomCenter"]*/);
+          instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
+      } else if(gateNum[type] < 4) { // T, D
+          newGate.className = "window jtk-node";
+          $('.jtk-demo-canvas').append( newGate );
+
+          $('#flowchart' + gateId).append('<h4 align="left">' + type[0] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 'Q' + '</h4>');
+          $('#flowchart' + gateId).append('<h4 align="right">' + 'Q\'' + '</h4>');
+
+          _addEndpoints(gateId, ["TopRight", "BottomRight"], ["TopLeft"]/*, ["BottomLeft"]*/);
+          instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
+      } else if(gateNum[type] == 4){ // or
+        newGate.className = "window-or jtk-node";
+        $('.jtk-demo-canvas').append( newGate );
+
+        _addEndpoints(gateId, ["RightMiddle"], ["TopLeft", "BottomLeft"]/*, ["BottomLeft"]*/);
+        instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
+      } else if(gateNum[type] == 5){ // and
+        newGate.className = "window-and jtk-node";
+        $('.jtk-demo-canvas').append( newGate );
+
+        _addEndpoints(gateId, ["RightMiddle"], ["TopLeft", "BottomLeft"]/*, ["BottomLeft"]*/);
+        instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
+      } else { // not in out
+        newGate.className = "window-trian jtk-node";
+        $('.jtk-demo-canvas').append( newGate );
+
+        _addEndpoints(gateId, ["RightMiddle"], ["LeftMiddle"]);
+        instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
+      }
+
+      /*$(document).bind( "mousemove" , function(e) {
+        $('#flowchart' + gateId).css({
           left: e.pageX - 100,
           top: e.pageY - 200
         });
@@ -139,7 +197,7 @@ jsPlumb.ready(function () {
           $(document).unbind( "mousemove" );
         });
 
-      });
+      });*/
 
     }
 
@@ -181,11 +239,34 @@ jsPlumb.ready(function () {
         });
 
         instance.bind("connectionDrag", function (connection) {
-            console.log("connection " + connection.id + " is being dragged. suspendedElement is ", connection.suspendedElement, " of type ", connection.suspendedElementType);
+            /*console.log("connection " + connection.id + " is being dragged. suspendedElement is ", connection.suspendedElement, " of type ", connection.suspendedElementType);*/
         });
 
         instance.bind("connectionDragStop", function (connection) {
-            console.log("connection " + connection.id + " was dragged");
+            /*console.log("connection " + connection.id + " was dragged");*/
+            console.log(connection);
+            if( connection.source && connection.target ) { // successful connected
+                var source = connection.sourceId.replace('flowchart', '');
+                var target = connection.targetId.replace('flowchart', '');
+                var sourceAnc = connection.sourceId.endpoints[0].anchor.type;
+                var targetAnc = connection.sourceId.endpoints[1].anchor.type;
+                var srcType = source.split('-')[0];
+                var trgType = target.split('-')[0];
+
+                if( srcType == 'JK' || srcType == 'RS' || srcType == 'T' || srcType == 'D'){
+                    if( sourceAnc == "BottomRight" ){ // Q'
+                      source = source + '-0';
+                    } else { // Q
+                      source = source + '-1';
+                    }
+                } else if( srcType == 'and' || srcType == 'or' || srcType == 'not' ) {
+                    source = source + '-0';
+                } else {
+
+                }
+                console.log( '  ++   ' , source + ' --> ' + target );
+                allConnect[source] = target;
+            }
         });
 
         instance.bind("connectionMoved", function (params) {
@@ -198,37 +279,5 @@ jsPlumb.ready(function () {
 });
 
 var addGate;
-var gates = [];
-
-
-
-
-// NW.JS Notification
-var showNotification = function (icon, title, body) {
-  if (icon && icon.match(/^\./)) {
-    icon = icon.replace('.', 'file://' + process.cwd());
-  }
-
-  var notification = new Notification(title, {icon: icon, body: body});
-
-  notification.onclick = function () {
-    writeLog("Notification clicked");
-  };
-
-  notification.onclose = function () {
-    writeLog("Notification closed");
-    NW.Window.get().focus();
-  };
-
-  notification.onshow = function () {
-    writeLog("-----<br>" + title);
-  };
-
-  return notification;
-};
-
-var writeLog = function (msg) {
-  var logElement = $("#output");
-  logElement.innerHTML += msg + "<br>";
-  logElement.scrollTop = logElement.scrollHeight;
-};
+var allGates = [];
+var allConnect = {};
