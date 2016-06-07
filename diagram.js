@@ -249,6 +249,7 @@ jsPlumb.ready(function () {
         instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
       }
 
+
       /*$(document).bind( "mousemove" , function(e) {
         $('#flowchart' + gateId).css({
           left: e.pageX - 100,
@@ -265,11 +266,6 @@ jsPlumb.ready(function () {
     // suspend drawing and initialise.
     instance.batch(function () {
 
-        /*_addEndpoints("Window4", ["TopCenter", "BottomCenter"], ["LeftMiddle", "RightMiddle"]);
-        _addEndpoints("Window2", ["LeftMiddle", "BottomCenter"], ["TopCenter", "RightMiddle"]);
-        _addEndpoints("Window3", ["RightMiddle", "BottomCenter"], ["LeftMiddle", "TopCenter"]);
-        _addEndpoints("Window1", ["LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter"]);*/
-
         // listen for new connections; initialise them the same way we initialise the connections at startup.
         instance.bind("connection", function (connInfo, originalEvent) {
             init(connInfo.connection);
@@ -281,21 +277,17 @@ jsPlumb.ready(function () {
         // method, or document.querySelectorAll:
         //jsPlumb.draggable(document.querySelectorAll(".window"), { grid: [20, 20] });
 
-        // connect a few up
-        /*instance.connect({uuids: ["Window2BottomCenter", "Window3TopCenter"], editable: true});
-        instance.connect({uuids: ["Window2LeftMiddle", "Window4LeftMiddle"], editable: true});
-        instance.connect({uuids: ["Window4TopCenter", "Window4RightMiddle"], editable: true});
-        instance.connect({uuids: ["Window3RightMiddle", "Window2RightMiddle"], editable: true});
-        instance.connect({uuids: ["Window4BottomCenter", "Window1TopCenter"], editable: true});
-        instance.connect({uuids: ["Window3BottomCenter", "Window1BottomCenter"], editable: true});
-        //*/
-
         //
         // listen for clicks on connections, and offer to delete connections on click.
         //
         instance.bind("click", function (conn, originalEvent) {
-            if (confirm("Delete connection from " + conn.sourceId + " to " + conn.targetId + "?"))
+          console.log(conn);
+            if (confirm("Delete connection from " + conn.sourceId + " to " + conn.targetId + "?")) {
                 instance.detach(conn); // delete line
+                delete allConnect[conn.id];
+                console.log( allConnect );
+            }
+
             /*conn.toggleType("basic");*/
         });
 
@@ -304,57 +296,21 @@ jsPlumb.ready(function () {
         });
 
         instance.bind("connectionDragStop", function (connection) {
-            /*console.log("connection " + connection.id + " was dragged");*/
-            console.log(connection);
+
+            /*console.log(connection);
             console.log('+++++++++++');
+*/
 
-            if( (typeof connection.source != 'undefined' ) && (typeof connection.target != 'undefined' ) ) { // successful connected
+            var conObj = getConId( connection );
 
-                var source = connection.sourceId.replace('flowchart', '');
-                var target = connection.targetId.replace('flowchart', '');
-                var sourceAnc = connection.endpoints[0].anchor.type;
-                var targetAnc = connection.endpoints[1].anchor.type;
-                var srcType = source.split('-')[0];
-                var trgType = target.split('-')[0];
+            allConnect[connection.id] = conObj;
 
-
-                /*
-                  src: type-id-out(Q for 1 or Q' for 0)
-                  tar: type-id-in(J or K or R or S)
-                */
-                if( srcType == 'JK' || srcType == 'RS' || srcType == 'T' || srcType == 'D'){
-                    if( sourceAnc == "BottomRight" ){ // Q'
-                      source = source + '-0';
-                    } else { // Q
-                      source = source + '-1';
-                    }
-                }
-
-                if( trgType == 'JK' || trgType == 'RS' ) {
-                    if( targetAnc == "TopLeft" ) {
-                      target = target + '-' + trgType[0];
-                    } else {
-                      target = target + '-' + trgType[1];
-                    }
-                } else if( trgType == 'and' || trgType == 'or' ) {
-                  if( targetAnc == 'TopLeft' ) {
-                    target = target + '-0';
-                  } else {
-                    target = target + '-1';
-                  }
-                }
-
-
-                allConnect[target] = source;
-
-                console.log( '  ++   ' , source + ' --> ' + target );
-                console.log( '-------------------------' );
-                for(var con in allConnect){
-                  console.log(allConnect[con] + ' -> ' + con +  '\n');
-                }
-                console.log( '-------------------------' );
-
+            console.log( '  ++   ' , conObj.source + ' --> ' + conObj.target );
+            console.log( '-------------------------' );
+            for(var con in allConnect){
+              console.log(con + ' :: ' + allConnect[con].source + ' -> ' + allConnect[con].target + '\n');
             }
+            console.log( '-------------------------' );
         });
 
         instance.bind("connectionMoved", function (params) {
@@ -369,3 +325,52 @@ jsPlumb.ready(function () {
 var addGate;
 var allGates = [];
 var allConnect = {};
+
+var getConId = function(connection) {
+
+  if( (typeof connection.source == 'undefined' ) || (typeof connection.target == 'undefined' ) ) { // not successful connected
+    return {};
+  }
+
+  var source = connection.sourceId.replace('flowchart', '');
+  var target = connection.targetId.replace('flowchart', '');
+  var sourceAnc = connection.endpoints[0].anchor.type;
+  var targetAnc = connection.endpoints[1].anchor.type;
+  var srcType = source.split('-')[0];
+  var trgType = target.split('-')[0];
+
+
+  /*
+    src: type-id-out(Q for 1 or Q' for 0)
+    tar: type-id-in(J or K or R or S)
+  */
+  if( srcType == 'JK' || srcType == 'RS' || srcType == 'T' || srcType == 'D'){
+      if( sourceAnc == "BottomRight" ){ // Q'
+        source = source + '-0';
+      } else { // Q
+        source = source + '-1';
+      }
+  }
+
+  if( trgType == 'JK' || trgType == 'RS' ) {
+      if( targetAnc == "TopLeft" ) {
+        target = target + '-' + trgType[0];
+      } else {
+        target = target + '-' + trgType[1];
+      }
+  } else if( trgType == 'and' || trgType == 'or' ) {
+    if( targetAnc == 'TopLeft' ) {
+      target = target + '-0';
+    } else {
+      target = target + '-1';
+    }
+  }
+
+  return {
+    target: target,
+    source: source
+  };
+
+
+
+}
