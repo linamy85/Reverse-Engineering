@@ -2,6 +2,26 @@
 const gateNum = { "JK": 0 , "RS": 1, "T": 2, "D": 3, "or": 4, "and": 5, "not": 6, "in": 7, "out": 8};
 var used = [0,0,0,0,0,0,0,0,0];
 
+/* spec of target // respect to connection
+
+  JK, RS => JK-[index]-[J/K]
+  T, D => T-[index]
+
+  and, or => and-[index]-0/1  // for uniqueness
+  not => not-[index]
+
+  out => out-[index]-[output_name]
+*/
+
+/* spec of source // respect to connection
+
+  JK, RS, T, D => JK-[index]-[0/1] // 0 for Q' , 1 for Q
+
+  and, or, not => and-[index]
+
+  in => in-[index]-[output_name]
+*/
+
 jsPlumb.ready(function () {
 
     var instance = window.jsp = jsPlumb.getInstance({
@@ -308,8 +328,6 @@ jsPlumb.ready(function () {
                     } else { // Q
                       source = source + '-1';
                     }
-                } else if( srcType == 'and' || srcType == 'or' || srcType == 'not' ) {
-                    source = source + '-0';
                 }
 
                 if( trgType == 'JK' || trgType == 'RS' ) {
@@ -332,7 +350,7 @@ jsPlumb.ready(function () {
                 console.log( '  ++   ' , source + ' --> ' + target );
                 console.log( '-------------------------' );
                 for(var con in allConnect){
-                  console.log(con + ' -> ' + allConnect[con] + '\n');
+                  console.log(allConnect[con] + ' -> ' + con +  '\n');
                 }
                 console.log( '-------------------------' );
 

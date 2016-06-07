@@ -30,7 +30,7 @@
     transition: box-shadow 0.15s ease-in;
 }
 
-.flowchart-demo .window-trian-in , .window-trian-out {
+.flowchart-demo .window-trian, .window-trian-in , .window-trian-out {
    width: 0;
   height: 0;
   border-style: solid;
