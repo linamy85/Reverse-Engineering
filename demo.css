@@ -30,14 +30,57 @@
     transition: box-shadow 0.15s ease-in;
 }
 
-.flowchart-demo .window-trian {
+.flowchart-demo .window-trian-in , .window-trian-out {
    width: 0;
   height: 0;
   border-style: solid;
   border-width: 40px 0 40px 69.28px;
   border-color: transparent transparent transparent #9bc6f5;
-
 }
+
+.flowchart-demo .window-trian-in:before {
+  top: -8px;
+  left: -98px;
+  position: relative;
+  background: #9bc6f5;
+  width: 30px;
+  height: 5px;
+  display: inline-block;
+  content: '';
+}
+
+
+.window-trian-in h3 {
+    text-align: right;
+    top: -28px;
+    left: -165px;
+    position: relative;
+    width: 60px;
+    height: 20px;
+    margin: 0px;
+}
+
+.flowchart-demo .window-trian-out:after {
+  top: -32px;
+  left: -6px;
+  position: relative;
+  background: #9bc6f5;
+  width: 30px;
+  height: 5px;
+  display: inline-block;
+  content: '';
+}
+
+.window-trian-out h3 {
+    text-align: left;
+    top: -15px;
+    left: 33px;
+    position: relative;
+    width: 60px;
+    height: 20px;
+    margin: 0px;
+}
+
 
 .flowchart-demo .window-and {
   width: 80px;
@@ -50,7 +93,6 @@
   -webkit-border-bottom-right-radius: 40px;
   background: #BADA55;
 }
-
 
 
 .flowchart-demo .window-or {

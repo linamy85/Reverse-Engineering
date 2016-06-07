@@ -141,11 +141,13 @@ jsPlumb.ready(function () {
       var newGate = document.createElement("div");
       var gateId = type + '-' + used[ gateNum[ type ] ];
       used[ gateNum[type] ]++;
-      newGate.id = 'flowchart' + gateId;
-      allGates.push(gateId);
+
 
 
       if(gateNum[type] < 2) { // JK, RS
+        newGate.id = 'flowchart' + gateId;
+        allGates.push(gateId);
+
           newGate.className = "window jtk-node";
           $('.jtk-demo-canvas').append( newGate );
 
@@ -160,6 +162,9 @@ jsPlumb.ready(function () {
             ]/*, ["BottomCenter"]*/);
           instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
       } else if(gateNum[type] < 4) { // T, D
+        newGate.id = 'flowchart' + gateId;
+        allGates.push(gateId);
+
           newGate.className = "window jtk-node";
           $('.jtk-demo-canvas').append( newGate );
 
@@ -169,22 +174,58 @@ jsPlumb.ready(function () {
           _addEndpoints(gateId, ["TopRight", "BottomRight"], ["TopLeft"]/*, ["BottomLeft"]*/);
           instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
       } else if(gateNum[type] == 4){ // or
+        newGate.id = 'flowchart' + gateId;
+        allGates.push(gateId);
+
         newGate.className = "window-or jtk-node";
         $('.jtk-demo-canvas').append( newGate );
 
         _addEndpoints(gateId, ["RightMiddle"], ["TopLeft", "BottomLeft"]/*, ["BottomLeft"]*/);
         instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
       } else if(gateNum[type] == 5){ // and
+        newGate.id = 'flowchart' + gateId;
+        allGates.push(gateId);
+
         newGate.className = "window-and jtk-node";
         $('.jtk-demo-canvas').append( newGate );
 
         _addEndpoints(gateId, ["RightMiddle"], ["TopLeft", "BottomLeft"]/*, ["BottomLeft"]*/);
         instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
-      } else { // not in out
+      } else if(gateNum[type] == 6){ // not
+        newGate.id = 'flowchart' + gateId;
+        allGates.push(gateId);
+
         newGate.className = "window-trian jtk-node";
         $('.jtk-demo-canvas').append( newGate );
 
         _addEndpoints(gateId, ["RightMiddle"], ["LeftMiddle"]);
+        instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
+      } else { // in, out
+        var name = prompt( type+"put name?", type+(used[gateNum[type]]-1) );
+        if(name == null) {
+          used[ gateNum[type] ]--;
+          return;
+        }
+        gateId = gateId + '-' + name;
+        newGate.id = 'flowchart' + gateId;
+        allGates.push(gateId);
+
+
+
+        if(type == "in") {
+          newGate.className = "window-trian-in jtk-node";
+          $('.jtk-demo-canvas').append( newGate );
+
+            _addEndpoints(gateId, ["RightMiddle"], []);
+            $('#flowchart' + gateId).append('<h3>' + name + '</h3>');
+        } else {
+          newGate.className = "window-trian-out jtk-node";
+          $('.jtk-demo-canvas').append( newGate );
+
+          _addEndpoints(gateId, [], ["LeftMiddle"]);
+          $('#flowchart' + gateId).append('<h3>' + name + '</h3>');
+        }
+
         instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
       }
 
@@ -204,10 +245,10 @@ jsPlumb.ready(function () {
     // suspend drawing and initialise.
     instance.batch(function () {
 
-        _addEndpoints("Window4", ["TopCenter", "BottomCenter"], ["LeftMiddle", "RightMiddle"]);
+        /*_addEndpoints("Window4", ["TopCenter", "BottomCenter"], ["LeftMiddle", "RightMiddle"]);
         _addEndpoints("Window2", ["LeftMiddle", "BottomCenter"], ["TopCenter", "RightMiddle"]);
         _addEndpoints("Window3", ["RightMiddle", "BottomCenter"], ["LeftMiddle", "TopCenter"]);
-        _addEndpoints("Window1", ["LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter"]);
+        _addEndpoints("Window1", ["LeftMiddle", "RightMiddle"], ["TopCenter", "BottomCenter"]);*/
 
         // listen for new connections; initialise them the same way we initialise the connections at startup.
         instance.bind("connection", function (connInfo, originalEvent) {
@@ -221,13 +262,13 @@ jsPlumb.ready(function () {
         //jsPlumb.draggable(document.querySelectorAll(".window"), { grid: [20, 20] });
 
         // connect a few up
-        instance.connect({uuids: ["Window2BottomCenter", "Window3TopCenter"], editable: true});
+        /*instance.connect({uuids: ["Window2BottomCenter", "Window3TopCenter"], editable: true});
         instance.connect({uuids: ["Window2LeftMiddle", "Window4LeftMiddle"], editable: true});
         instance.connect({uuids: ["Window4TopCenter", "Window4RightMiddle"], editable: true});
         instance.connect({uuids: ["Window3RightMiddle", "Window2RightMiddle"], editable: true});
         instance.connect({uuids: ["Window4BottomCenter", "Window1TopCenter"], editable: true});
         instance.connect({uuids: ["Window3BottomCenter", "Window1BottomCenter"], editable: true});
-        //
+        //*/
 
         //
         // listen for clicks on connections, and offer to delete connections on click.
@@ -245,14 +286,22 @@ jsPlumb.ready(function () {
         instance.bind("connectionDragStop", function (connection) {
             /*console.log("connection " + connection.id + " was dragged");*/
             console.log(connection);
-            if( connection.source && connection.target ) { // successful connected
+            console.log('+++++++++++');
+
+            if( (typeof connection.source != 'undefined' ) && (typeof connection.target != 'undefined' ) ) { // successful connected
+
                 var source = connection.sourceId.replace('flowchart', '');
                 var target = connection.targetId.replace('flowchart', '');
-                var sourceAnc = connection.sourceId.endpoints[0].anchor.type;
-                var targetAnc = connection.sourceId.endpoints[1].anchor.type;
+                var sourceAnc = connection.endpoints[0].anchor.type;
+                var targetAnc = connection.endpoints[1].anchor.type;
                 var srcType = source.split('-')[0];
                 var trgType = target.split('-')[0];
 
+
+                /*
+                  src: type-id-out(Q for 1 or Q' for 0)
+                  tar: type-id-in(J or K or R or S)
+                */
                 if( srcType == 'JK' || srcType == 'RS' || srcType == 'T' || srcType == 'D'){
                     if( sourceAnc == "BottomRight" ){ // Q'
                       source = source + '-0';
@@ -261,11 +310,26 @@ jsPlumb.ready(function () {
                     }
                 } else if( srcType == 'and' || srcType == 'or' || srcType == 'not' ) {
                     source = source + '-0';
-                } else {
-
                 }
+
+                if( trgType == 'JK' || trgType == 'RS' ) {
+                    if( targetAnc == "TopLeft" ) {
+                      target = target + '-' + trgType[0];
+                    } else {
+                      target = target + '-' + trgType[1];
+                    }
+                }
+
+                /* problem : same key */
+                /*allConnect[source] = target;
+                */
                 console.log( '  ++   ' , source + ' --> ' + target );
-                allConnect[source] = target;
+                console.log( '-------------------------' );
+                for(var con in allConnect){
+                  console.log(con + ' -> ' + allConnect[con] + '\n');
+                }
+                console.log( '-------------------------' );
+
             }
         });
 
