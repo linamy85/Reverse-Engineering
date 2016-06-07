@@ -318,11 +318,17 @@ jsPlumb.ready(function () {
                     } else {
                       target = target + '-' + trgType[1];
                     }
+                } else if( trgType == 'and' || trgType == 'or' ) {
+                  if( targetAnc == 'TopLeft' ) {
+                    target = target + '-0';
+                  } else {
+                    target = target + '-1';
+                  }
                 }
 
-                /* problem : same key */
-                /*allConnect[source] = target;
-                */
+
+                allConnect[target] = source;
+
                 console.log( '  ++   ' , source + ' --> ' + target );
                 console.log( '-------------------------' );
                 for(var con in allConnect){
