@@ -264,24 +264,12 @@ jsPlumb.ready(function () {
       return;
     }
 
-    for( var id of allGates ) {
-      /*jsPlumb.detachAllConnections('flowchart' + id);
-      jsPlumb.removeAllEndpoints('flowchart' + id);
-      jsPlumb.detach('flowchart' + id); // <--
-      jsPlumb.recalculateOffsets('flowchart' + id);
-*/        jsPlumb.remove('flowchart' + id);
-    }
-
-    /*jsPlumb.detachEveryConnection();
+    jsPlumb.detachEveryConnection();
     jsPlumb.deleteEveryEndpoint();
     jsPlumb.empty('canvas');
-    jsPlumb.recalculateOffsets('canvas');*/
-
+    
     allGates = [];
     allConnect = {};
-    for( var i in used ) {
-      used[i] = 0;
-    }
   }
 
   // suspend drawing and initialise.
@@ -349,6 +337,7 @@ jsPlumb.ready(function () {
 var addGate, clearAll;
 var allGates = [];
 var allConnect = {};
+
 
 var getConId = function(connection) {
 
