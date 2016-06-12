@@ -1,6 +1,17 @@
 // solve :: ( allGates , allConect ) ->  State X in -> State X out
+var n_reg  = 0;
+var n_in   = 0;
+var n_out  = 0;
+var n_gate = 0;
 
 var solve = function() {
+
+  n_reg  = 0;
+  n_in   = 0;
+  n_out  = 0;
+  n_gate = 0;
+
+
   let debug = console.log;
   let get_bit = function( x , i ) {
     return ( x >> i ) & 1;
@@ -35,10 +46,7 @@ var solve = function() {
       return db;
     }
   };
-  let n_reg  = 0;
-  let n_in   = 0;
-  let n_out  = 0;
-  let n_gate = 0;
+
 
   let reg_id = {};
   let in_id  = {};
@@ -192,4 +200,3 @@ var solve = function() {
   return ret;
 
 };
-

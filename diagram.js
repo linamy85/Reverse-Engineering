@@ -169,7 +169,7 @@ jsPlumb.ready(function () {
       allGates.push(gateId);
 
       newGate.className = "window jtk-node";
-      $('.jtk-demo-canvas').append( newGate );
+      $('#canvas').append( newGate );
 
       $('#flowchart' + gateId).append('<h4 align="left">' + type[0] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 'Q' + '</h4>');
       $('#flowchart' + gateId).append('<h4 align="left">' + type[1] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 'Q\'' + '</h4>');
@@ -186,7 +186,7 @@ jsPlumb.ready(function () {
       allGates.push(gateId);
 
       newGate.className = "window jtk-node";
-      $('.jtk-demo-canvas').append( newGate );
+      $('#canvas').append( newGate );
 
       $('#flowchart' + gateId).append('<h4 align="left">' + type[0] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 'Q' + '</h4>');
       $('#flowchart' + gateId).append('<h4 align="right">' + 'Q\'' + '</h4>');
@@ -198,7 +198,7 @@ jsPlumb.ready(function () {
       allGates.push(gateId);
 
       newGate.className = "window-or jtk-node";
-      $('.jtk-demo-canvas').append( newGate );
+      $('#canvas').append( newGate );
 
       _addEndpoints(gateId, ["RightMiddle"], ["TopLeft", "BottomLeft"]/*, ["BottomLeft"]*/);
       instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
@@ -207,7 +207,7 @@ jsPlumb.ready(function () {
       allGates.push(gateId);
 
       newGate.className = "window-and jtk-node";
-      $('.jtk-demo-canvas').append( newGate );
+      $('#canvas').append( newGate );
 
       _addEndpoints(gateId, ["RightMiddle"], ["TopLeft", "BottomLeft"]/*, ["BottomLeft"]*/);
       instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
@@ -216,7 +216,7 @@ jsPlumb.ready(function () {
       allGates.push(gateId);
 
       newGate.className = "window-trian jtk-node";
-      $('.jtk-demo-canvas').append( newGate );
+      $('#canvas').append( newGate );
 
       _addEndpoints(gateId, ["RightMiddle"], ["LeftMiddle"]);
       instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
@@ -232,7 +232,7 @@ jsPlumb.ready(function () {
 
 
       newGate.className = "window-trian-" + type + " jtk-node";
-      $('.jtk-demo-canvas').append( newGate );
+      $('#canvas').append( newGate );
 
       if(type == "in") {
         _addEndpoints(gateId, ["RightMiddle"], []);
@@ -260,16 +260,15 @@ jsPlumb.ready(function () {
   }
 
   clearAll = function(){
-    if(!confirm('留白也是種鎂?')) {
-      return;
-    }
 
     jsPlumb.detachEveryConnection();
     jsPlumb.deleteEveryEndpoint();
     jsPlumb.empty('canvas');
-    
+
     allGates = [];
     allConnect = {};
+
+    $('#output').text('');
   }
 
   // suspend drawing and initialise.
@@ -277,7 +276,7 @@ jsPlumb.ready(function () {
 
     // listen for new connections; initialise them the same way we initialise the connections at startup.
     instance.bind("connection", function (connInfo, originalEvent) {
-      init(connInfo.connection);
+      /*init(connInfo.connection);*/
     });
 
     // make all the window divs draggable

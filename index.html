@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/jsPlumbToolkit-demo.css">
     <link rel="stylesheet" href="demo.css">
+    <link rel="stylesheet" href="state.css">
 
 
   </head>
@@ -21,7 +22,7 @@
     <div height="50" id="toolbar">
       <div class="row">
         <div class="col-md-2">
-          <button onclick="calc()"><img height="47" src="img/result.png"></img></button>
+          <button onclick="getAns()"><img height="47" src="img/result.png"></img></button>
         </div>
 
         <div class="col-md-1">
@@ -52,7 +53,7 @@
           <button onclick="addGate( 'out' )"><img height="42" align="left" src="img/output.png"></img></button>
         </div>
         <div class="col-md-1">
-          <button onclick="clearAll()"><img height="47" src="img/clearall.png"></img></button>
+          <button onclick="clearEverything()"><img height="47" src="img/clearall.png"></img></button>
         </div>
       </div>
     </div>
@@ -66,7 +67,14 @@
         </div>
     </div>
 
-    <div id="output"></div>
+    <h2 align="center" id="output"></h2>
+
+    <div class="jtk-demo-main">
+        <!-- demo -->
+        <div class="jtk-demo-canvas canvas-wide statemachine-demo jtk-surface jtk-surface-nopan" id="state-canvas">
+
+        </div>
+    </div>
 
     <!-- support lib for bezier stuff -->
     <script src="./lib/jsBezier-0.8.js"></script>
@@ -104,12 +112,23 @@
     <!-- no library jsPlumb adapter -->
     <script src="./src/base-library-adapter.js"></script>
     <script src="./src/dom.jsPlumb.js"></script>
+    <script src="./src/bezier-editor.js"></script>
 
     <script src="./src/jquery-2.2.4.min.js"></script>
 
     <!-- my script -->
     <script src="diagram.js"></script>
     <script src="algo.js"></script>
+    <script src="state.js"></script>
+    <script>
+      var clearEverything = function() {
+        if(!confirm('留白也是種鎂?')) {
+          return;
+        }
+        clearAll();
+        clearStates();
+      };
+    </script>
 
 
 
