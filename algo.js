@@ -105,13 +105,23 @@ var solve = function() {
     console.log( tbl );
   }
   console.log( from_tbl.toString() );
+  let cur_stk = {};
   let dfs = function( now ) { // now must be a target or in
     console.log( "dfs " + now );
     if( now in tbl ) {
       console.log( "  return dfs " + now + " == " + tbl[ now ].toString() );
       return tbl[ now ];
     }
+    if( now in cur_stk ) {
+      alert( "No circular dependency!!" );
+      return 0;
+    }
+    cur_stk[ now ] = 1;
     let res = 0;
+    if( !( now in from_tbl ) ) {
+      alert( now + " has no input signal!!!" );
+      return 0;
+    }
     let src = from_tbl[ now ];
     let typ = src.split( '-' )[ 0 ];
     if( typ === "in" ) {
@@ -136,6 +146,7 @@ var solve = function() {
     } else if( typ === "D" ) {
       res = tbl[ src ];
     }
+    delete cur_stk[ now ];
     tbl[ now ] = res;
     console.log( "  return dfs " + now + " == " + res.toString() );
     return res;
