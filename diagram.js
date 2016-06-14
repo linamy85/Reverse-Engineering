@@ -274,7 +274,7 @@ jsPlumb.ready(function () {
     $('#flowchart' + gateId).dblclick(function() {
       console.log('[[[[[[[[[[[[[[[[[[[      ' + gateId + '         ]]]]]]]]]]]]]]]]]]]' + allData[gateId]);
       if(allData[gateId]['Conn'].length > 0) {
-        alert('對不起，只有孤單者得以歸去。');
+        alert('善哉善哉。只有孤單者得以歸去。');
         return;
       }
       if(!confirm('You want to delete ' + gateId + ' ?'))
