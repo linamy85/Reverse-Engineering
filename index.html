@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Digital System & Labortory</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" >
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/jsPlumbToolkit-defaults.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/jsPlumbToolkit-demo.css">
+    <link rel="stylesheet" href="demo.css">
+    <link rel="stylesheet" href="state.css">
+    <link rel="stylesheet" href="./lib/bootstrap.min.css">
+
+
+  </head>
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Reverse!</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active">
+          <button type="button" class="btn btn-danger navbar-btn btn-lg" onclick="getAns_and_switch()">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>  GO!
+          </button>&nbsp;&nbsp;
+        </li>
+        <li>
+          <button class="btn btn-warning navbar-btn btn-lg" type="button" onclick="switchView()">
+            <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>  Back
+          </button>
+        </li>
+
+        <h4 class="navbar-text"> Gates: </h4>
+        <li><button class="btn btn-info navbar-btn btn-lg" type="button" onclick="addGate( 'not' )">NOT</button>&nbsp;</li>
+        <li><button class="btn btn-info navbar-btn btn-lg" type="button" onclick="addGate( 'or' )">OR</button>&nbsp;</li>
+        <li><button class="btn btn-info navbar-btn btn-lg" type="button" onclick="addGate( 'and' )">AND</button>&nbsp;</li>
+
+        <h4 class="navbar-text"> Regs: </h4>
+        <li><button class="btn btn-success navbar-btn btn-lg" type="button" onclick="addGate( 'JK' )">JK</button>&nbsp;</li>
+        <li><button class="btn btn-success navbar-btn btn-lg" type="button" onclick="addGate( 'RS' )">RS</button>&nbsp;</li>
+        <li><button class="btn btn-success navbar-btn btn-lg" type="button" onclick="addGate( 'D' )">D</button>&nbsp;</li>
+        <li><button class="btn btn-success navbar-btn btn-lg" type="button" onclick="addGate( 'T' )">T</button>&nbsp;</li>
+
+        <p class="navbar-text">  </p>
+        <li>
+          <button type="button" class="btn btn-primary navbar-btn btn-lg" onclick="addGate( 'in' )">
+            In <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+          </button>
+          &nbsp;
+        </li>
+
+        <li>
+          <button type="button" class="btn btn-primary navbar-btn btn-lg" onclick="addGate( 'out' )">
+            <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Out
+          </button>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <button type="button" class="btn btn-danger navbar-btn btn-lg" onclick="clearEverything()">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+          </button>
+        </li>
+        <li>&nbsp;
+          <button type="button" class="btn btn-success navbar-btn btn-lg" data-toggle="modal" data-target="#myModal">
+            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+          </button>
+        </li>
+        <!-- Small modal -->
+
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+
+  <body data-demo-id="flowchart">
+
+    <div class="jtk-demo-main">
+        <div class="jtk-demo-canvas canvas-wide flowchart-demo jtk-surface jtk-surface-nopan" id="canvas">
+
+        </div>
+    </div>
+
+
+    <h4 align="center" id="output" style="display: none"></h4>
+
+    <div class="jtk-demo-main">
+        <!-- demo -->
+        <div class="jtk-demo-canvas canvas-wide statemachine-demo jtk-surface jtk-surface-nopan" id="state-canvas"  style="display: none">
+
+        </div>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Information Center</h4>
+          </div>
+          <div class="modal-body">
+            <li>
+              <ul><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;Click on line to remove it.</ul>
+              <ul><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;Double click on gate/flip flop to remove it. But only <strong>lonely</strong> one can be removed!</ul>
+              <ul><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;After you finish, hit <font color="red"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> GO!</font> to find for state diagram.</ul>
+              <ul><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;To switch between state diagram & circuit diagram, press <font color="orange"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>  Back</font></ul>
+            </li>
+            <br/></br/>
+            <div align="center"><font color="gray">Copyright © 2016 linamy85, c2251393. All rights reserved</font></div>
+          </div>
+          <div class="modal-footer">
+
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Got it!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <script src="./lib/jsPlumb-2.1.2-min.js"></script>
+
+    <script src="./lib/jquery-2.2.4.min.js"></script>
+    <script src="./lib/bootstrap.min.js"></script>
+
+    <!-- my script -->
+    <script src="diagram.js"></script>
+    <script src="algo.js"></script>
+    <script src="state.js"></script>
+    <script>
+      var clearEverything = function() {
+        if(!confirm('留白也是種鎂?')) {
+          return;
+        }
+        clearAll();
+        clearStates();
+      };
+
+      var switchView = function() {
+        $('#state-canvas').toggle();
+        $('#canvas').toggle();
+        $('#output').toggle();
+        jsPlumb.repaintEverything();
+      };
+
+      var getAns_and_switch = function() {
+        switchView();
+        getAns();
+      };
+
+
+    </script>
+
+
+
+
+  </body>
+</html>
