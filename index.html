@@ -14,52 +14,76 @@
     <link rel="stylesheet" href="./css/jsPlumbToolkit-demo.css">
     <link rel="stylesheet" href="demo.css">
     <link rel="stylesheet" href="state.css">
+    <link rel="stylesheet" href="./lib/bootstrap.min.css">
 
 
   </head>
-  <body data-demo-id="flowchart">
-    <br/>
-    <div height="50" id="toolbar">
-      <div class="row">
-        <div class="col-md-2">
-          <button onclick="getAns()"><img height="47" src="img/result.png"></img></button>
-        </div>
 
-        <div class="col-md-1">
-          <button onclick="addGate( 'not' )"><img height="47" src="img/not_gate.png"></img></button>
-        </div>
-        <div class="col-md-1">
-          <button onclick="addGate( 'and' )"><img height="47" src="img/and_gate.png"></img></button>
-        </div>
-        <div class="col-md-1">
-          <button onclick="addGate( 'or' )"><img height="47" src="img/or_gate.png"></img></button>
-        </div>
-        <div class="col-md-1">
-          <button onclick="addGate( 'JK' )"><img height="47" src="img/JK.png"></img></button>
-        </div>
-        <div class="col-md-1">
-          <button onclick="addGate( 'RS' )"><img height="47" src="img/RS.png"></img></button>
-        </div>
-        <div class="col-md-1">
-          <button onclick="addGate( 'D' )"><img height="47" src="img/dFF.png"></img></button>
-        </div>
-        <div class="col-md-1">
-          <button onclick="addGate( 'T' )"><img height="47" src="img/TFF.png"></img></button>
-        </div>
-        <div class="col-md-1">
-          <button onclick="addGate( 'in' )"><img height="47" align="right" src="img/input.png"></img></button>
-        </div>
-        <div class="col-md-1">
-          <button onclick="addGate( 'out' )"><img height="42" align="left" src="img/output.png"></img></button>
-        </div>
-        <div class="col-md-1">
-          <button onclick="clearEverything()"><img height="47" src="img/clearall.png"></img></button>
-        </div>
-      </div>
+  <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Reverse!</a>
     </div>
 
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active">
+          <button type="button" class="btn btn-danger navbar-btn btn-lg" onclick="getAns_and_switch()">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>  GO!
+          </button>&nbsp;&nbsp;
+        </li>
+        <li>
+          <button class="btn btn-warning navbar-btn btn-lg" type="button" onclick="switchView()">
+            <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>  Back
+          </button>
+        </li>
+
+        <p class="navbar-text"> Gates: </p>
+        <li><button class="btn btn-info navbar-btn btn-lg" type="button" onclick="addGate( 'not' )">NOT</button>&nbsp;</li>
+        <li><button class="btn btn-info navbar-btn btn-lg" type="button" onclick="addGate( 'or' )">OR</button>&nbsp;</li>
+        <li><button class="btn btn-info navbar-btn btn-lg" type="button" onclick="addGate( 'and' )">AND</button>&nbsp;</li>
+
+        <p class="navbar-text"> Regs: </p>
+        <li><button class="btn btn-success navbar-btn btn-lg" type="button" onclick="addGate( 'JK' )">JK</button>&nbsp;</li>
+        <li><button class="btn btn-success navbar-btn btn-lg" type="button" onclick="addGate( 'RS' )">RS</button>&nbsp;</li>
+        <li><button class="btn btn-success navbar-btn btn-lg" type="button" onclick="addGate( 'D' )">D</button>&nbsp;</li>
+        <li><button class="btn btn-success navbar-btn btn-lg" type="button" onclick="addGate( 'T' )">T</button>&nbsp;</li>
+
+        <p class="navbar-text">  </p>
+        <li>
+          <button type="button" class="btn btn-primary navbar-btn btn-lg" onclick="addGate( 'in' )">
+            In <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+          </button>
+          &nbsp;
+        </li>
+
+        <li>
+          <button type="button" class="btn btn-primary navbar-btn btn-lg" onclick="addGate( 'out' )">
+            <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Out
+          </button>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <button type="button" class="btn btn-danger navbar-btn btn-lg" onclick="clearEverything()">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+          </button>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
 
 
+  <body data-demo-id="flowchart">
 
     <div class="jtk-demo-main">
         <div class="jtk-demo-canvas canvas-wide flowchart-demo jtk-surface jtk-surface-nopan" id="canvas">
@@ -67,54 +91,24 @@
         </div>
     </div>
 
-    <h2 align="center" id="output"></h2>
+
+    <h4 align="center" id="output" style="display: none"></h4>
 
     <div class="jtk-demo-main">
         <!-- demo -->
-        <div class="jtk-demo-canvas canvas-wide statemachine-demo jtk-surface jtk-surface-nopan" id="state-canvas">
+        <div class="jtk-demo-canvas canvas-wide statemachine-demo jtk-surface jtk-surface-nopan" id="state-canvas"  style="display: none">
 
         </div>
     </div>
 
-    <!-- support lib for bezier stuff -->
-    <script src="./lib/jsBezier-0.8.js"></script>
-    <!-- event adapter -->
-    <script src="./lib/mottle-0.7.2.js"></script>
-<!-- geometry functions -->
-    <script src="./lib/biltong-0.3.js"></script>
-<!-- drag -->
-    <script src="./lib/katavorio-0.17.0.js"></script>
-    <!-- jsplumb util -->
-    <script src="./src/util.js"></script>
-    <script src="./src/browser-util.js"></script>
-    <!-- main jsplumb engine -->
-    <script src="./src/jsPlumb.js"></script>
-    <!-- base DOM adapter -->
-    <script src="./src/dom-adapter.js"></script>
-    <script src="./src/overlay-component.js"></script>
-    <!-- endpoint -->
-    <script src="./src/endpoint.js"></script>
-    <!-- connection -->
-    <script src="./src/connection.js"></script>
-    <!-- anchors -->
-    <script src="./src/anchors.js"></script>
-    <!-- connectors, endpoint and overlays  -->
-    <script src="./src/defaults.js"></script>
-    <!-- bezier connectors -->
-    <script src="./src/connectors-bezier.js"></script>
-    <!-- state machine connectors -->
-    <script src="./src/connectors-statemachine.js"></script>
-    <!-- flowchart connectors -->
-    <script src="./src/connectors-flowchart.js"></script>
-    <!-- SVG renderer -->
-    <script src="./src/renderers-svg.js"></script>
 
-    <!-- no library jsPlumb adapter -->
-    <script src="./src/base-library-adapter.js"></script>
-    <script src="./src/dom.jsPlumb.js"></script>
-    <script src="./src/bezier-editor.js"></script>
 
-    <script src="./src/jquery-2.2.4.min.js"></script>
+
+
+    <script src="./lib/jsPlumb-2.1.2-min.js"></script>
+
+    <script src="./lib/jquery-2.2.4.min.js"></script>
+    <script src="./lib/bootstrap.min.js"></script>
 
     <!-- my script -->
     <script src="diagram.js"></script>
@@ -128,6 +122,20 @@
         clearAll();
         clearStates();
       };
+
+      var switchView = function() {
+        $('#state-canvas').toggle();
+        $('#canvas').toggle();
+        $('#output').toggle();
+        jsPlumb.repaintEverything();
+      };
+
+      var getAns_and_switch = function() {
+        switchView();
+        getAns();
+      };
+
+
     </script>
 
 

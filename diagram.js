@@ -23,6 +23,7 @@ var used = [0,0,0,0,0,0,0,0,0];
    */
 
 jsPlumb.ready(function () {
+  let allData = {};
 
   var instance = window.jsp = jsPlumb.getInstance({
     // default drag options
@@ -138,17 +139,21 @@ jsPlumb.ready(function () {
   };
 
   var _addEndpoints = function (toId, sourceAnchors, targetAnchors/*, clockAnchors*/) {
+    console.log( 'here: ' + allData[toId] );
+    allData[ toId ][ 'EP' ] = []
     for (var i = 0; i < sourceAnchors.length; i++) {
       var sourceUUID = toId + sourceAnchors[i];
-      instance.addEndpoint("flowchart" + toId, sourceEndpoint, {
+      let ep = instance.addEndpoint("flowchart" + toId, sourceEndpoint, {
         anchor: sourceAnchors[i], uuid: sourceUUID
       });
+      allData[ toId ][ 'EP' ].push(ep);
     }
     for (var j = 0; j < targetAnchors.length; j++) {
       var targetUUID = toId + targetAnchors[j];
-      instance.addEndpoint("flowchart" + toId, targetEndpoint, {
+      let ep = instance.addEndpoint("flowchart" + toId, targetEndpoint, {
         anchor: targetAnchors[j], uuid: targetUUID
       });
+      allData[ toId ][ 'EP' ].push(ep);
     }
 
   };
@@ -157,6 +162,15 @@ jsPlumb.ready(function () {
      add gate from button
      */
   addGate = function(type){
+
+    let gateInit = function(gateId) {
+      $('#flowchart' + gateId).css({
+        left:100,
+        top: 200
+      });
+    };
+
+
     console.log("Add Gate", type);
     var newGate = document.createElement("div");
     var gateId = type + '-' + used[ gateNum[ type ] ];
@@ -164,62 +178,65 @@ jsPlumb.ready(function () {
 
 
 
+
     if(gateNum[type] < 2) { // JK, RS
       newGate.id = 'flowchart' + gateId;
-      allGates.push(gateId);
+      allData[ gateId ] = {};
 
       newGate.className = "window jtk-node";
       $('#canvas').append( newGate );
 
+
       $('#flowchart' + gateId).append('<h4 align="left">' + type[0] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 'Q' + '</h4>');
       $('#flowchart' + gateId).append('<h4 align="left">' + type[1] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 'Q\'' + '</h4>');
 
+      gateInit(gateId);
       _addEndpoints(gateId,
         [
         "TopRight", "BottomRight"/*[ 1, 0.2, 1, 0, 0, 0, "right" ], [ 1, 0.8, 1, 0, 0, 0, "right" ]*/
       ], [
         "TopLeft", "BottomLeft"/*[ 0, 0.2, 0, 0, 0, 0, "left" ], [ 0, 0.8, 0, 0, 0, 0, "left" ]*/
       ]/*, ["BottomCenter"]*/);
-      instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
+
     } else if(gateNum[type] < 4) { // T, D
       newGate.id = 'flowchart' + gateId;
-      allGates.push(gateId);
+      allData[ gateId ] = {};
 
       newGate.className = "window jtk-node";
       $('#canvas').append( newGate );
 
       $('#flowchart' + gateId).append('<h4 align="left">' + type[0] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + 'Q' + '</h4>');
       $('#flowchart' + gateId).append('<h4 align="right">' + 'Q\'' + '</h4>');
-
+      gateInit(gateId);
       _addEndpoints(gateId, ["TopRight", "BottomRight"], ["TopLeft"]/*, ["BottomLeft"]*/);
-      instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
+
     } else if(gateNum[type] == 4){ // or
       newGate.id = 'flowchart' + gateId;
-      allGates.push(gateId);
+      allData[ gateId ] = {};
 
       newGate.className = "window-or jtk-node";
       $('#canvas').append( newGate );
-
+      gateInit(gateId);
       _addEndpoints(gateId, ["RightMiddle"], ["TopLeft", "BottomLeft"]/*, ["BottomLeft"]*/);
-      instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
+
     } else if(gateNum[type] == 5){ // and
       newGate.id = 'flowchart' + gateId;
-      allGates.push(gateId);
+      allData[ gateId ] = {};
 
       newGate.className = "window-and jtk-node";
       $('#canvas').append( newGate );
-
+      gateInit(gateId);
       _addEndpoints(gateId, ["RightMiddle"], ["TopLeft", "BottomLeft"]/*, ["BottomLeft"]*/);
-      instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
+
     } else if(gateNum[type] == 6){ // not
       newGate.id = 'flowchart' + gateId;
-      allGates.push(gateId);
+      allData[ gateId ] = {};
 
       newGate.className = "window-trian jtk-node";
       $('#canvas').append( newGate );
-
+      gateInit(gateId);
       _addEndpoints(gateId, ["RightMiddle"], ["LeftMiddle"]);
-      instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
+
     } else { // in, out
       var name = prompt( type+"put name?", type+(used[gateNum[type]]-1) );
       if(name == null) {
@@ -227,12 +244,15 @@ jsPlumb.ready(function () {
         return;
       }
       gateId = gateId + '-' + name;
+      allData[ gateId ] = {};
       newGate.id = 'flowchart' + gateId;
-      allGates.push(gateId);
+
 
 
       newGate.className = "window-trian-" + type + " jtk-node";
       $('#canvas').append( newGate );
+
+      gateInit(gateId);
 
       if(type == "in") {
         _addEndpoints(gateId, ["RightMiddle"], []);
@@ -242,9 +262,45 @@ jsPlumb.ready(function () {
 
       $('#flowchart' + gateId).append('<h3>' + name + '</h3>');
 
-      instance.draggable($('#flowchart' + gateId), { grid: [20, 20] });
-    }
 
+    }
+    allGates.push(gateId);
+
+    instance.draggable($('#flowchart' + gateId)/*, { grid: [20, 20] }*/);
+
+
+    allData[ gateId ][ 'Conn' ] = [];
+
+    $('#flowchart' + gateId).dblclick(function() {
+      console.log('[[[[[[[[[[[[[[[[[[[      ' + gateId + '         ]]]]]]]]]]]]]]]]]]]' + allData[gateId]);
+      if(allData[gateId]['Conn'].length > 0) {
+        alert('對不起，只有孤單者得以歸去。');
+        return;
+      }
+      if(!confirm('You want to delete ' + gateId + ' ?'))
+        return;
+      jsPlumb.detachAllConnections($('#flowchart' + gateId));
+      jsPlumb.removeAllEndpoints('flowchart' + gateId);
+      jsPlumb.detach($('#flowchart' + gateId));
+      jsPlumb.remove($('#flowchart' + gateId));
+
+
+      // remove endpoints
+      for(var ep of allData[ gateId ][ 'EP' ]) {
+        jsPlumb.deleteEndpoint(ep);
+      }
+      // remove gate index
+      FindAndDelete(allGates, gateId);
+      // remove connection
+      for(var conne of allData[ gateId ][ 'Conn' ]) {
+        delete allConnect[ conne ];
+      }
+
+      delete allData[ gateId ];
+      jsPlumb.repaintEverything();
+
+
+    });
 
     /*$(document).bind( "mousemove" , function(e) {
       $('#flowchart' + gateId).css({
@@ -267,6 +323,7 @@ jsPlumb.ready(function () {
 
     allGates = [];
     allConnect = {};
+    allEp = {};
 
     $('#output').text('');
   }
@@ -294,6 +351,11 @@ jsPlumb.ready(function () {
         instance.detach(conn); // delete line
         delete allConnect[conn.id];
         console.log( allConnect );
+
+        let src = conn.sourceId.replace('flowchart', '');
+        let trg = conn.targetId.replace('flowchart', '');
+        FindAndDelete( allData[src]['Conn'] , conn.id);
+        FindAndDelete( allData[trg]['Conn'] , conn.id);
       }
 
       /*conn.toggleType("basic");*/
@@ -325,6 +387,10 @@ jsPlumb.ready(function () {
         }
         console.log( '-------------------------' );
 
+        let src = connection.sourceId.replace('flowchart', '');
+        let trg = connection.targetId.replace('flowchart', '');
+        allData[ src ][ 'Conn' ].push(connection.id);
+        allData[ trg ][ 'Conn' ].push(connection.id);
       }
     });
   });
@@ -385,4 +451,13 @@ var getConId = function(connection) {
 
 
 
+}
+
+var FindAndDelete = function(ar, it) {
+  for(var i in ar) { // update all gate number
+    if( ar[i] == it ) {
+      ar.splice(i, 1);
+      console.log('Find ' + it + '-> ' + ar);
+    }
+  }
 }

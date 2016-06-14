@@ -66,6 +66,7 @@ jsPlumb.ready(function () {
 
 
     getAns = function() {
+      /*$('#myModal').modal('show');*/
         let ret = solve();
 
         let convertState = function( st , size ) {
@@ -81,8 +82,8 @@ jsPlumb.ready(function () {
         };
 
         let createNode = function( state_num ) { // create nodes in clockwise
-          let center = { x: 400, y: 400 };
-          let radius = 300;
+          let center = { x: 500, y: 300 };
+          let radius = 200;
           // create Node with id="state[id]" & class="w"
           for( var i = 0 ; i < (state_num) ; i++ ) {
             var st = document.createElement( 'div' );
@@ -106,8 +107,8 @@ jsPlumb.ready(function () {
               type:"basic" ,
               overlays:[
                   [ "Label", {
-                    label:"IN: " + convertState( inp , n_in ) + ' -> OUT: ' + convertState( ret[reg][inp][1] , n_out ),
-                    location:0.25,
+                    label:"IN: " + convertState( inp , n_in ) + ' | OUT: ' + convertState( ret[reg][inp][1] , n_out ),
+                    location:0.25 + 0.15*Math.random(),
                     id:"myLabel",
                     cssClass: "aLabel" } ]
                 ],

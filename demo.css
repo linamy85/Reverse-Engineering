@@ -30,13 +30,22 @@
     transition: box-shadow 0.15s ease-in;
 }
 
-.flowchart-demo .window-trian, .window-trian-in , .window-trian-out {
+.flowchart-demo .window-trian {
+   width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 40px 0 40px 69.28px;
+  border-color: transparent transparent transparent #F5F749;
+}
+
+.flowchart-demo .window-trian-in , .window-trian-out {
    width: 0;
   height: 0;
   border-style: solid;
   border-width: 40px 0 40px 69.28px;
   border-color: transparent transparent transparent #9bc6f5;
 }
+
 
 .flowchart-demo .window-trian-in:before {
   top: -8px;
