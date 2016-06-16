@@ -26,7 +26,7 @@ body {
 .jtk-demo-canvas {
     margin-left: 60px;
     height:650px;
-    max-height:700px;
+    max-height:800px;
     border:1px solid #CCC;
     background-color:white;
 }
@@ -75,44 +75,6 @@ li {
     list-style-type: none;
 }
 
-/* ------------------------ node palette -------------------- */
-
-.sidebar {
-    margin:0;
-    padding:0;
-    padding-top: 7px;
-    padding-right: 10px;
-    width:150px;
-    float:left;
-    text-align:center;
-    height: 550px;
-    background-color: #84acb3;
-}
-
-.sidebar ul li {
-    background-color: #234b5e;
-    border-radius: 11px;
-    color: #f7ebca;
-    cursor: move;
-    margin-bottom: 10px;
-    margin-left: 6px;
-    padding: 8px;
-    width:128px;
-}
-
-.sidebar ul {
-    width:100%;
-    padding:0;
-}
-
-.sidebar ul li:hover {
-    background-color: #577a8b;
-}
-
-.sidebar i {
-    float:left;
-}
-
 @media (max-width: 600px) {
     .sidebar {
         float:none;
@@ -128,7 +90,7 @@ li {
     }
     .jtk-demo-canvas {
         margin-left: 0;
-        margin-top:10px;
+/*        margin-top:10px;*/
         height:364px;
     }
 }
