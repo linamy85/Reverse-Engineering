@@ -157,6 +157,9 @@
     <script src="algo.js"></script>
     <script src="state.js"></script>
     <script>
+      $(window).load(function(){
+        $('#myModal').modal('show');
+      });
       var clearEverything = function() {
         if(!confirm('硫白也是種鎂?')) {
           return;
