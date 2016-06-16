@@ -149,7 +149,7 @@
     <script src="state.js"></script>
     <script>
       var clearEverything = function() {
-        if(!confirm('留白也是種鎂?')) {
+        if(!confirm('硫白也是種鎂?')) {
           return;
         }
         clearAll();
@@ -165,6 +165,7 @@
 
       var getAns_and_switch = function() {
         switchView();
+        clearStates();
         getAns();
       };
 
