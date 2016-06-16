@@ -98,8 +98,15 @@
         </div>
     </div>
 
+    <div class="row">
+      <div class="col-md-offset-4 col-md-4">
+        <div class="panel panel-info" id="output-panel" style="display: none; text-align:center;">
+          <div class="panel-heading">The state sequence</div>
+          <div class="panel-body" id="output"></div>
+        </div>
+      </div>
+    </div>
 
-    <h4 align="center" id="output" style="display: none"></h4>
 
     <div class="jtk-demo-main">
         <!-- demo -->
@@ -159,7 +166,7 @@
       var switchView = function() {
         $('#state-canvas').toggle();
         $('#canvas').toggle();
-        $('#output').toggle();
+        $('#output-panel').toggle();
         jsPlumb.repaintEverything();
       };
 

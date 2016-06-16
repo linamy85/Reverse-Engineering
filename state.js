@@ -116,7 +116,7 @@ jsPlumb.ready(function () {
           }
         }
 
-        let order = 'The state sequence ::  ';
+        let order = '';
         for( var gate of allGates ) {
           let gt = gate.split('-')[0];
           if(['JK','RS','T','D'].indexOf( gt ) >= 0)
